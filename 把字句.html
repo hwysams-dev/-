@@ -1,0 +1,2131 @@
+<!DOCTYPE html><html lang="zh-TW"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>把字句守護者大挑戰 🛡️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&amp;family=Fredoka:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6366F1;
+      --secondary: #22D3EE;
+      --accent: #FBBF24;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --purple: #A855F7;
+      --pink: #EC4899;
+      --orange: #F97316;
+      --bg-light: linear-gradient(135deg, #E0F2FE 0%, #F0FDFA 50%, #FEF3C7 100%);
+      --bg-dark: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #172554 100%);
+      --text-light: #1E293B;
+      --text-dark: #F1F5F9;
+      --card-light: rgba(255,255,255,0.95);
+      --card-dark: rgba(30,41,59,0.95);
+    }
+
+    .dark {
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --card: var(--card-dark);
+      --border: rgba(255,255,255,0.1);
+    }
+
+    :root:not(.dark) {
+      --bg: var(--bg-light);
+      --text: var(--text-light);
+      --card: var(--card-light);
+      --border: rgba(0,0,0,0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-decoration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .shield {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0.08;
+      animation: floatShield 12s ease-in-out infinite;
+    }
+
+    @keyframes floatShield {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-40px) rotate(5deg); }
+    }
+
+    .shield:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .shield:nth-child(2) { top: 60%; left: 85%; animation-delay: 2s; }
+    .shield:nth-child(3) { top: 25%; left: 75%; animation-delay: 4s; }
+    .shield:nth-child(4) { top: 75%; left: 15%; animation-delay: 1s; }
+    .shield:nth-child(5) { top: 40%; left: 50%; animation-delay: 3s; }
+
+    /* Floating Cartoon Characters */
+    .cartoon-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .cartoon-char {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: float 6s ease-in-out infinite;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .cartoon-char:nth-child(1) { top: 15%; right: 8%; animation-delay: 0s; }
+    .cartoon-char:nth-child(2) { bottom: 20%; left: 5%; animation-delay: 1.5s; }
+    .cartoon-char:nth-child(3) { top: 50%; right: 3%; animation-delay: 3s; }
+    .cartoon-char:nth-child(4) { bottom: 10%; right: 15%; animation-delay: 2s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      25% { transform: translateY(-15px) scale(1.05); }
+      50% { transform: translateY(5px) scale(0.95); }
+      75% { transform: translateY(-10px) scale(1.02); }
+    }
+
+    /* Bouncing stars */
+    .star-burst {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      animation: starBurst 4s ease-in-out infinite;
+    }
+
+    .star-burst:nth-child(1) { top: 30%; left: 10%; animation-delay: 0s; }
+    .star-burst:nth-child(2) { top: 70%; right: 10%; animation-delay: 1.3s; }
+    .star-burst:nth-child(3) { top: 20%; right: 25%; animation-delay: 2.6s; }
+
+    @keyframes starBurst {
+      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 0.8; transform: scale(1.2) rotate(180deg); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 25px 0;
+      animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 1rem;
+      opacity: 0.75;
+    }
+
+    /* Mascot */
+    .mascot {
+      font-size: 4rem;
+      animation: mascotBounce 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes mascotBounce {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    /* Screens */
+    .screen { display: none; animation: fadeIn 0.5s ease-out; }
+    .screen.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Role Cards */
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      margin-top: 35px;
+    }
+
+    .role-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 35px 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 3px solid transparent;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .role-card:hover::before { opacity: 1; }
+
+    .role-card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .role-card.student:hover { border-color: var(--secondary); }
+    .role-card.teacher:hover { border-color: var(--purple); }
+
+    .role-icon {
+      font-size: 4.5rem;
+      margin-bottom: 15px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .role-card h2 { font-size: 1.6rem; margin-bottom: 8px; }
+    .role-card p { opacity: 0.7; font-size: 0.95rem; }
+
+    /* Input & Buttons */
+    .input-group { margin: 25px 0; }
+    .input-group label { display: block; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .input-group input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 18px;
+      border: 3px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+      color: var(--text);
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #4F46E5);
+      color: white;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5); }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary), #06B6D4);
+      color: #0C4A6E;
+      box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+    }
+
+    .btn-voice {
+      background: linear-gradient(135deg, var(--orange), #EA580C);
+      color: white;
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-back {
+      background: var(--card);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #16A34A);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger), #DC2626);
+      color: white;
+    }
+
+    /* Game Header */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      padding: 10px 18px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .score-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent), #F59E0B);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #78350F;
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+    }
+
+    .retry-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--pink), #DB2777);
+      padding: 10px 16px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    }
+
+    .retry-heart {
+      font-size: 1.1rem;
+      animation: heartbeat 1s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* Level Indicator */
+    .level-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .level-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s;
+    }
+
+    .level-dot.active {
+      background: var(--primary);
+      transform: scale(1.2);
+    }
+
+    .level-dot.completed {
+      background: var(--success);
+    }
+
+    /* Question Card */
+    .question-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .question-mascot {
+      position: absolute;
+      top: -25px;
+      right: 20px;
+      font-size: 3rem;
+      animation: wiggle 2s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: white;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    .level-theme {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-left: 10px;
+    }
+
+    .dark .level-theme {
+      background: rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+    }
+
+    .question-text {
+      font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    .question-instruction {
+      color: var(--secondary);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .dark .question-instruction { color: #67E8F9; }
+
+    .voice-btn-container {
+      margin-bottom: 20px;
+    }
+
+    /* Drag & Drop Area */
+    .drag-container {
+      margin: 20px 0;
+    }
+
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      min-height: 60px;
+      padding: 15px;
+      background: rgba(99, 102, 241, 0.08);
+      border-radius: 16px;
+      margin-bottom: 15px;
+    }
+
+    .drop-zone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      min-height: 70px;
+      padding: 15px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 3px dashed rgba(34, 197, 94, 0.4);
+      border-radius: 16px;
+      transition: all 0.3s;
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.15);
+    }
+
+    .word-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      background: var(--card);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: grab;
+      transition: all 0.2s;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .word-chip:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .word-chip.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+
+    .word-chip.in-dropzone {
+      background: linear-gradient(135deg, var(--success), #16A34A);
+      color: white;
+      border-color: var(--success);
+    }
+
+    .drop-placeholder {
+      color: rgba(0,0,0,0.3);
+      font-size: 1rem;
+    }
+
+    .dark .drop-placeholder { color: rgba(255,255,255,0.3); }
+
+    /* Options Grid */
+    .options-grid { display: grid; gap: 12px; }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--card);
+      border: 3px solid var(--border);
+      border-radius: 14px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.08);
+      transform: translateX(5px);
+    }
+
+    .option-btn.correct {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.15);
+      animation: correctPulse 0.5s ease-out;
+    }
+
+    .option-btn.wrong {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+      animation: wrongShake 0.5s ease-out;
+    }
+
+    @keyframes correctPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    .option-letter {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .dark .option-letter { color: #A5B4FC; }
+
+    /* Feedback */
+    .feedback {
+      display: none;
+      padding: 18px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.correct { background: rgba(34, 197, 94, 0.15); color: #15803D; }
+    .feedback.wrong { background: rgba(239, 68, 68, 0.15); color: #DC2626; }
+    .feedback.retry { background: rgba(251, 191, 36, 0.15); color: #B45309; }
+    .dark .feedback.correct { color: #4ADE80; }
+    .dark .feedback.wrong { color: #F87171; }
+    .dark .feedback.retry { color: #FCD34D; }
+
+    .feedback .value-tag {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.2);
+      color: var(--purple);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+
+    .dark .feedback .value-tag { color: #C4B5FD; }
+
+    .encourage-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    .encourage-emoji {
+      font-size: 1.5rem;
+      animation: encourageBounce 0.5s ease-out;
+    }
+
+    @keyframes encourageBounce {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    /* Submit Button for Drag */
+    .submit-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* Result Screen */
+    .result-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 35px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .result-icon { font-size: 5rem; margin-bottom: 15px; animation: bounce 1s ease-in-out infinite; }
+    .result-title { font-size: 1.8rem; margin-bottom: 8px; }
+    .result-score {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .result-message { font-size: 1.1rem; opacity: 0.8; margin: 15px 0; }
+    .stars { font-size: 2.5rem; margin: 15px 0; }
+
+    .badge-earned {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 15px 0;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.8); }
+    }
+
+    /* Teacher Password Screen */
+    .password-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      max-width: 400px;
+      margin: 40px auto;
+    }
+
+    .password-card h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .password-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #DC2626;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 15px;
+      animation: wrongShake 0.5s ease-out;
+    }
+
+    .dark .password-error { color: #F87171; }
+
+    /* Teacher Dashboard */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .dashboard-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-card .icon { font-size: 2rem; margin-bottom: 8px; }
+    .stat-card .value { font-size: 2.2rem; font-weight: 900; }
+    .stat-card .label { font-size: 0.85rem; opacity: 0.7; }
+
+    .stat-card:nth-child(1) .icon { color: var(--secondary); }
+    .stat-card:nth-child(2) .icon { color: var(--accent); }
+    .stat-card:nth-child(3) .icon { color: var(--success); }
+    .stat-card:nth-child(4) .icon { color: var(--purple); }
+
+    .student-list {
+      background: var(--card);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .list-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.2fr;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .student-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.2fr;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .student-row:hover { background: rgba(99, 102, 241, 0.05); }
+
+    .student-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .student-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-badge.playing { background: rgba(34, 211, 238, 0.2); color: #0891B2; }
+    .status-badge.completed { background: rgba(34, 197, 94, 0.2); color: #15803D; }
+    .dark .status-badge.playing { color: #67E8F9; }
+    .dark .status-badge.completed { color: #4ADE80; }
+
+    .level-progress {
+      display: flex;
+      gap: 4px;
+    }
+
+    .level-pip {
+      width: 20px;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+    }
+
+    .level-pip.done { background: var(--success); }
+    .level-pip.current { background: var(--primary); animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .no-students {
+      text-align: center;
+      padding: 50px 20px;
+      opacity: 0.6;
+    }
+
+    .no-students i { font-size: 3.5rem; margin-bottom: 15px; opacity: 0.4; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-content {
+      background: var(--card);
+      padding: 28px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 380px;
+      margin: 20px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content h3 { margin-bottom: 12px; font-size: 1.25rem; }
+    .modal-content p { margin-bottom: 22px; opacity: 0.8; }
+    .modal-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .modal-buttons .btn { padding: 10px 22px; font-size: 1rem; }
+
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Sound effect visual feedback */
+    .sound-wave {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .sound-wave.correct {
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+      animation: soundPulse 0.6s ease-out;
+    }
+
+    .sound-wave.wrong {
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+      animation: soundPulse 0.6s ease-out;
+    }
+
+    @keyframes soundPulse {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 15px; }
+      .role-cards { gap: 18px; }
+      .role-card { padding: 28px 20px; }
+      .role-icon { font-size: 3.5rem; }
+      .question-card { padding: 20px; }
+      .option-btn { padding: 14px; font-size: 1rem; }
+      .word-chip { padding: 10px 16px; font-size: 1rem; }
+      .list-header, .student-row { grid-template-columns: 1.5fr 1fr 1fr; }
+      .list-header > *:nth-child(4), .student-row > *:nth-child(4) { display: none; }
+      .cartoon-char { font-size: 1.8rem; }
+      .question-mascot { font-size: 2rem; top: -15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="shield">🛡️</div>
+    <div class="shield">⚔️</div>
+    <div class="shield">🏰</div>
+    <div class="shield">🌟</div>
+    <div class="shield">📚</div>
+  </div>
+
+  <!-- Cartoon Characters -->
+  <div class="cartoon-container">
+    <div class="cartoon-char">🦁</div>
+    <div class="cartoon-char">🐰</div>
+    <div class="cartoon-char">🦊</div>
+    <div class="cartoon-char">🐻</div>
+    <div class="star-burst">✨</div>
+    <div class="star-burst">⭐</div>
+    <div class="star-burst">💫</div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1><span class="mascot">🛡️</span> 把字句守護者大挑戰</h1>
+      <p class="subtitle">學習正確的把字句，成為語文小勇士！</p>
+    </header>
+
+    <!-- Role Selection Screen -->
+    <div id="roleScreen" class="screen active">
+      <div class="role-cards">
+        <div class="role-card student" onclick="selectRole('student')">
+          <div class="role-icon">⚔️</div>
+          <h2>我是小勇士</h2>
+          <p>開始把字句闖關挑戰</p>
+        </div>
+        <div class="role-card teacher" onclick="selectRole('teacher')">
+          <div class="role-icon">👩‍🏫</div>
+          <h2>我是老師</h2>
+          <p>即時查看學生答題情況</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Password Screen -->
+    <div id="passwordScreen" class="screen">
+      <div class="password-card">
+        <h2>🔐 教師登入</h2>
+        <div id="passwordError" class="password-error" style="display: none;">
+          <i class="fas fa-exclamation-circle"></i> 密碼錯誤，請重試！
+        </div>
+        <div class="input-group">
+          <label for="teacherPassword">請輸入教師密碼：</label>
+          <input type="password" id="teacherPassword" placeholder="輸入密碼...">
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-back" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+          </button>
+          <button class="btn btn-primary" onclick="checkPassword()">
+            <i class="fas fa-sign-in-alt"></i> 登入
+          </button>
+        </div>
+        <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; opacity: 0.6;">
+          提示：預設密碼是「teacher123」
+        </p>
+      </div>
+    </div>
+
+    <!-- Student Name Screen -->
+    <div id="nameScreen" class="screen">
+      <div class="question-card">
+        <div class="question-mascot">🦁</div>
+        <h2 style="text-align: center; margin-bottom: 18px;">⚔️ 歡迎來到守護者訓練營！</h2>
+        <p style="text-align: center; margin-bottom: 20px; opacity: 0.8;">完成三關挑戰，獲得守護者徽章！</p>
+        <div class="input-group">
+          <label for="studentName">請輸入你的名字：</label>
+          <input type="text" id="studentName" placeholder="例如：小明" maxlength="10">
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-back" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+          </button>
+          <button class="btn btn-primary" onclick="startGame()">
+            <i class="fas fa-play"></i> 開始挑戰
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="game-header">
+        <div class="player-info">
+          <div class="avatar">🧒</div>
+          <span id="playerName">小明</span>
+        </div>
+        <div class="retry-display">
+          <span id="retryHearts">❤️❤️❤️</span>
+          <span id="retryCount">3次機會</span>
+        </div>
+        <div class="score-display">
+          <i class="fas fa-star"></i>
+          <span id="scoreDisplay">0</span> 分
+        </div>
+      </div>
+
+      <div class="level-indicator" id="levelIndicator"></div>
+
+      <div id="feedbackArea" class="feedback"></div>
+
+      <div class="question-card">
+        <div class="question-mascot" id="questionMascot">🐰</div>
+        <div class="level-badge" id="levelBadge">
+          <i class="fas fa-shield-alt"></i>
+          <span id="levelTitle">第一關</span>
+        </div>
+        <span class="level-theme" id="levelTheme">基礎訓練</span>
+
+        <div class="voice-btn-container">
+          <button class="btn btn-voice" onclick="playVoice()" id="voiceBtn">
+            <i class="fas fa-volume-up"></i> 聽題目
+          </button>
+        </div>
+
+        <p class="question-text" id="questionText"></p>
+        <p class="question-instruction" id="questionInstruction"></p>
+
+        <!-- Drag & Drop Mode -->
+        <div id="dragMode" style="display: none;">
+          <div class="drag-container">
+            <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 10px;">📦 詞語庫（點擊或拖拽到下方）</p>
+            <div class="word-bank" id="wordBank"></div>
+            <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 10px;">✨ 把句子排好（點擊可移除）</p>
+            <div class="drop-zone" id="dropZone">
+              <span class="drop-placeholder">將詞語拖到這裡組成句子</span>
+            </div>
+          </div>
+          <div class="submit-container">
+            <button class="btn btn-success" onclick="checkDragAnswer()">
+              <i class="fas fa-check"></i> 確定答案
+            </button>
+          </div>
+        </div>
+
+        <!-- Multiple Choice Mode -->
+        <div id="choiceMode" style="display: none;">
+          <div class="options-grid" id="optionsGrid"></div>
+        </div>
+      </div>
+
+      <div style="text-align: center;">
+        <button class="btn btn-back" onclick="confirmExit()">
+          <i class="fas fa-home"></i> 回到首頁
+        </button>
+      </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="screen">
+      <div class="result-card">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <h2 class="result-title" id="resultTitle">恭喜通關！</h2>
+        <div class="result-score"><span id="finalScore">0</span>分</div>
+        <div class="stars" id="starsDisplay">⭐⭐⭐</div>
+        <div class="badge-earned" id="badgeEarned">
+          <i class="fas fa-medal"></i> 獲得「把字句守護者」徽章！
+        </div>
+        <p class="result-message" id="resultMessage"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+          <button class="btn btn-back" onclick="goHome()">
+            <i class="fas fa-home"></i> 回首頁
+          </button>
+          <button class="btn btn-primary" onclick="restartGame()">
+            <i class="fas fa-redo"></i> 再玩一次
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Dashboard -->
+    <div id="teacherScreen" class="screen">
+      <div class="dashboard-header">
+        <h2><i class="fas fa-chalkboard-teacher"></i> 教師儀表板</h2>
+        <button class="btn btn-back" onclick="logoutTeacher()">
+          <i class="fas fa-sign-out-alt"></i> 登出
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="icon"><i class="fas fa-users"></i></div>
+          <div class="value" id="totalStudents">0</div>
+          <div class="label">參與學生</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon"><i class="fas fa-trophy"></i></div>
+          <div class="value" id="avgScore">0</div>
+          <div class="label">平均分數</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon"><i class="fas fa-check-circle"></i></div>
+          <div class="value" id="avgAccuracy">0%</div>
+          <div class="label">平均正確率</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon"><i class="fas fa-medal"></i></div>
+          <div class="value" id="completedCount">0</div>
+          <div class="label">完成通關</div>
+        </div>
+      </div>
+
+      <div class="student-list">
+        <div class="list-header">
+          <span>學生</span>
+          <span>狀態</span>
+          <span>分數</span>
+          <span>關卡進度</span>
+        </div>
+        <div id="studentListBody">
+          <div class="no-students">
+            <i class="fas fa-user-clock"></i>
+            <p>目前還沒有學生開始遊戲</p>
+            <p style="font-size: 0.85rem;">學生開始遊戲後會顯示在這裡</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>🤔 確定要離開嗎？</h3>
+      <p>你的遊戲進度將不會保存喔！</p>
+      <div class="modal-buttons">
+        <button class="btn btn-back" onclick="closeModal()">繼續遊戲</button>
+        <button class="btn btn-primary" onclick="goHome()">確定離開</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Container -->
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <script>
+    // Dark mode detection
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      document.documentElement.classList.toggle('dark', event.matches);
+    });
+
+    // ========== TEACHER PASSWORD ==========
+    const TEACHER_PASSWORD = 'teacher123';
+
+    // ========== SOUND EFFECTS ==========
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playCorrectSound() {
+      // Create a happy ding sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+      oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+
+      showSoundWave('correct');
+    }
+
+    function playWrongSound() {
+      // Create a buzzer sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.type = 'sawtooth';
+      oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
+
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+
+      showSoundWave('wrong');
+    }
+
+    function playEncourageSound() {
+      // Gentle encouraging sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(494, audioContext.currentTime + 0.15);
+
+      gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    }
+
+    function showSoundWave(type) {
+      const wave = document.createElement('div');
+      wave.className = `sound-wave ${type}`;
+      document.body.appendChild(wave);
+      setTimeout(() => wave.remove(), 600);
+    }
+
+    // ========== ENCOURAGEMENT MESSAGES ==========
+    const encourageMessages = [
+      { text: "加油！你可以的！", emoji: "💪" },
+      { text: "再想想看喔！", emoji: "🤔" },
+      { text: "不要放棄，快成功了！", emoji: "🌟" },
+      { text: "相信自己！", emoji: "✨" },
+      { text: "努力就會有收穫！", emoji: "🌈" },
+      { text: "你很棒，繼續加油！", emoji: "👍" },
+      { text: "差一點就對了！", emoji: "🎯" },
+      { text: "用心想一想！", emoji: "💭" }
+    ];
+
+    function getRandomEncouragement() {
+      return encourageMessages[Math.floor(Math.random() * encourageMessages.length)];
+    }
+
+    // ========== MASCOTS ==========
+    const mascots = ['🦁', '🐰', '🦊', '🐻', '🐼', '🐨', '🦄', '🐯'];
+
+    function getRandomMascot() {
+      return mascots[Math.floor(Math.random() * mascots.length)];
+    }
+
+    // ========== GAME DATA ==========
+    const levels = [
+      {
+        name: "第一關",
+        theme: "基礎訓練",
+        icon: "🏰",
+        questions: [
+          {
+            type: "drag",
+            words: ["護旗手", "把", "國旗", "升上旗桿"],
+            answer: ["護旗手", "把", "國旗", "升上旗桿"],
+            voiceText: "護旗手把國旗升上旗桿",
+            explanation: "正確！「護旗手把國旗升上旗桿」",
+            value: "愛國"
+          },
+          {
+            type: "drag",
+            words: ["放在", "小明", "把", "書", "桌上"],
+            answer: ["小明", "把", "書", "放在", "桌上"],
+            voiceText: "小明把書放在桌上",
+            explanation: "正確！「小明把書放在   上」",
+            value: "整潔"
+          },
+          {
+            type: "choice",
+            text: "哪一句是正確的把字句？",
+            voiceText: "哪一句是正確的把字句？",
+            options: ["我把蘋果吃了。", "我吃把蘋果了。", "把我蘋果吃了。", "蘋果把我吃了。"],
+            correct: 0,
+            explanation: "正確！「我把蘋果吃了」是正確的把字句",
+            value: "語文基礎"
+          }
+        ]
+      },
+      {
+        name: "第二關",
+        theme: "生活應用",
+        icon: "🏠",
+        questions: [
+          {
+            type: "drag",
+            words: ["打掃", "媽媽", "把", "得很乾淨", "房間"],
+            answer: ["媽媽", "把", "房間", "打掃", "得很乾淨"],
+            voiceText: "媽媽把房間打掃得很乾淨",
+            explanation: "正確！「媽媽把房間打掃得很乾淨」",
+            value: "孝順"
+          },
+          {
+            type: "choice",
+            text: "弟弟___牛奶___完了。",
+            voiceText: "弟弟什麼牛奶什麼完了？",
+            instruction: "請選出正確的填空：",
+            options: ["把...喝", "用...吃", "在...放", "給...拿"],
+            correct: 0,
+            explanation: "正確！「弟弟把牛奶喝完了」",
+            value: "生活常識"
+          },
+          {
+            type: "drag",
+            words: ["老師", "擦", "黑板", "把", "乾淨"],
+            answer: ["老師", "把", "黑板", "擦", "乾淨"],
+            voiceText: "老師把黑板擦乾淨",
+            explanation: "正確！「老師把黑板擦乾淨」",
+            value: "尊師"
+          }
+        ]
+      },
+      {
+        name: "第三關",
+        theme: "安全意識",
+        icon: "🔐",
+        questions: [
+          {
+            type: "choice",
+            text: "關於保護個人資料，哪一句把字句是正確的？",
+            voiceText: "關於保護個人資料，哪一句把字句是正確的？",
+            options: ["我把密碼保護好。", "密碼把我保護好。", "把密碼我保護好。", "我保護把密碼好。"],
+            correct: 0,
+            explanation: "正確！我們要「把密碼保護好」，這是網絡安全的重要觀念！",
+            value: "守法·網絡安全"
+          },
+          {
+            type: "drag",
+            words: ["收好", "我", "個人資料", "把"],
+            answer: ["我", "把", "個人資料", "收好"],
+            voiceText: "我把個人資料收好",
+            explanation: "正確！「我把個人資料收好」，保護隱私很重要！",
+            value: "隱私保護"
+          },
+          {
+            type: "choice",
+            text: "哪一句把字句表達了正確的價值觀？",
+            voiceText: "哪一句把字句表達了正確的價值觀？",
+            options: ["我把垃圾丟進垃圾桶。", "我把垃圾丟在地上。", "垃圾把我丟進桶。", "把垃圾我丟了。"],
+            correct: 0,
+            explanation: "正確！「把垃圾丟進垃圾桶」是愛護環境的好行為！",
+            value: "環保"
+          }
+        ]
+      }
+    ];
+
+    // ========== GAME STATE ==========
+    let currentRole = '';
+    let playerName = '';
+    let currentLevel = 0;
+    let currentQuestion = 0;
+    let score = 0;
+    let correctCount = 0;
+    let totalQuestions = 0;
+    let isAnswered = false;
+    let currentVoiceText = '';
+    let draggedWords = [];
+    let retryCount = 3;
+    const MAX_RETRIES = 3;
+
+    // Student tracking
+    let studentsData = [];
+
+    // ========== DOM ELEMENTS ==========
+    const screens = {
+      role: document.getElementById('roleScreen'),
+      password: document.getElementById('passwordScreen'),
+      name: document.getElementById('nameScreen'),
+      game: document.getElementById('gameScreen'),
+      result: document.getElementById('resultScreen'),
+      teacher: document.getElementById('teacherScreen')
+    };
+
+    // ========== UTILITY FUNCTIONS ==========
+    function showScreen(name) {
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[name].classList.add('active');
+    }
+
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getRandomAvatar() {
+      const avatars = ['🧒', '👧', '👦', '🦸', '🧙', '🐱', '🐶', '🦊', '🐻', '🦁'];
+      return avatars[Math.floor(Math.random() * avatars.length)];
+    }
+
+    // ========== VOICE FUNCTIONS ==========
+    function playVoice(customText) {
+      const text = customText || currentVoiceText;
+      if (!text) return;
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-HK';
+        utter.rate = 0.9;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function speakFeedback(isCorrect, explanation) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = isCorrect ? explanation : "再想一想，重新試試！";
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-HK';
+        utter.rate = 0.9;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    // ========== ROLE SELECTION ==========
+    function selectRole(role) {
+      currentRole = role;
+      if (role === 'student') {
+        showScreen('name');
+        document.getElementById('studentName').focus();
+      } else {
+        showScreen('password');
+        document.getElementById('teacherPassword').focus();
+        document.getElementById('passwordError').style.display = 'none';
+      }
+    }
+
+    function checkPassword() {
+      const passwordInput = document.getElementById('teacherPassword');
+      const password = passwordInput.value.trim();
+
+      if (password === TEACHER_PASSWORD) {
+        showScreen('teacher');
+        updateTeacherDashboard();
+        passwordInput.value = '';
+      } else {
+        document.getElementById('passwordError').style.display = 'block';
+        playWrongSound();
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    function logoutTeacher() {
+      showScreen('role');
+      currentRole = '';
+    }
+
+    function goBack() {
+      showScreen('role');
+      currentRole = '';
+    }
+
+    // ========== RETRY FUNCTIONS ==========
+    function updateRetryDisplay() {
+      const heartsDisplay = document.getElementById('retryHearts');
+      const countDisplay = document.getElementById('retryCount');
+
+      let hearts = '';
+      for (let i = 0; i < MAX_RETRIES; i++) {
+        hearts += i < retryCount ? '❤️' : '🖤';
+      }
+      heartsDisplay.textContent = hearts;
+      countDisplay.textContent = `${retryCount}次機會`;
+    }
+
+    function resetRetries() {
+      retryCount = MAX_RETRIES;
+      updateRetryDisplay();
+    }
+
+    // ========== GAME FUNCTIONS ==========
+    function startGame() {
+      const nameInput = document.getElementById('studentName');
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        nameInput.style.borderColor = '#EF4444';
+        nameInput.setAttribute('placeholder', '請輸入你的名字！');
+        return;
+      }
+
+      playerName = name;
+      document.getElementById('playerName').textContent = playerName;
+
+      // Reset game state
+      currentLevel = 0;
+      currentQuestion = 0;
+      score = 0;
+      correctCount = 0;
+      totalQuestions = levels.reduce((sum, l) => sum + l.questions.length, 0);
+      isAnswered = false;
+      resetRetries();
+
+      // Add/update student tracking
+      const idx = studentsData.findIndex(s => s.name === playerName);
+      const studentData = {
+        name: playerName,
+        status: 'playing',
+        score: 0,
+        correct: 0,
+        total: totalQuestions,
+        currentLevel: 0,
+        currentQuestion: 0,
+        avatar: getRandomAvatar(),
+        levelsCompleted: 0
+      };
+
+      if (idx === -1) {
+        studentsData.push(studentData);
+      } else {
+        studentsData[idx] = { ...studentsData[idx], ...studentData };
+      }
+
+      updateScoreDisplay();
+      updateLevelIndicator();
+      showScreen('game');
+      loadQuestion();
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('scoreDisplay').textContent = score;
+    }
+
+    function updateLevelIndicator() {
+      const container = document.getElementById('levelIndicator');
+      container.innerHTML = levels.map((_, i) => {
+        let cls = 'level-dot';
+        if (i < currentLevel) cls += ' completed';
+        else if (i === currentLevel) cls += ' active';
+        return `<div class="${cls}"></div>`;
+      }).join('');
+    }
+
+    function loadQuestion() {
+      if (currentLevel >= levels.length) {
+        showResults();
+        return;
+      }
+
+      const level = levels[currentLevel];
+      if (currentQuestion >= level.questions.length) {
+        currentLevel++;
+        currentQuestion = 0;
+        updateLevelIndicator();
+        loadQuestion();
+        return;
+      }
+
+      const q = level.questions[currentQuestion];
+      isAnswered = false;
+      draggedWords = [];
+      resetRetries();
+
+      // Update mascot
+      document.getElementById('questionMascot').textContent = getRandomMascot();
+
+      // Update UI
+      document.getElementById('levelBadge').innerHTML = `<i class="fas fa-shield-alt"></i> ${level.name}`;
+      document.getElementById('levelTheme').textContent = level.theme;
+
+      currentVoiceText = q.voiceText || q.text || '';
+      document.getElementById('feedbackArea').className = 'feedback';
+      document.getElementById('feedbackArea').innerHTML = '';
+
+      if (q.type === 'drag') {
+        document.getElementById('dragMode').style.display = 'block';
+        document.getElementById('choiceMode').style.display = 'none';
+        document.getElementById('questionText').textContent = '請把詞語排成正確的把字句：';
+        document.getElementById('questionInstruction').textContent = '點擊詞語添加，再點擊可移除';
+
+        const wordBank = document.getElementById('wordBank');
+        const dropZone = document.getElementById('dropZone');
+        wordBank.innerHTML = '';
+        dropZone.innerHTML = '<span class="drop-placeholder">將詞語拖到這裡組成句子</span>';
+
+        const shuffled = shuffleArray(q.words);
+        shuffled.forEach(word => {
+          const chip = createWordChip(word);
+          wordBank.appendChild(chip);
+        });
+
+      } else {
+        document.getElementById('dragMode').style.display = 'none';
+        document.getElementById('choiceMode').style.display = 'block';
+        document.getElementById('questionText').textContent = q.text;
+        document.getElementById('questionInstruction').textContent = q.instruction || '請選出正確的答案：';
+
+        const optionsGrid = document.getElementById('optionsGrid');
+        optionsGrid.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+          btn.onclick = () => selectChoiceAnswer(i);
+          optionsGrid.appendChild(btn);
+        });
+      }
+
+      updateStudentProgress();
+    }
+
+    function createWordChip(word) {
+      const chip = document.createElement('div');
+      chip.className = 'word-chip';
+      chip.textContent = word;
+      chip.draggable = true;
+      chip.dataset.word = word;
+
+      // Click to add/remove
+      chip.onclick = () => toggleWordInDropzone(chip);
+
+      // Drag events
+      chip.ondragstart = (e) => {
+        chip.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', word);
+      };
+      chip.ondragend = () => chip.classList.remove('dragging');
+
+      return chip;
+    }
+
+    function toggleWordInDropzone(chip) {
+      if (isAnswered) return;
+
+      const word = chip.dataset.word;
+      const dropZone = document.getElementById('dropZone');
+      const wordBank = document.getElementById('wordBank');
+
+      if (chip.classList.contains('in-dropzone')) {
+        // Remove from dropzone
+        chip.classList.remove('in-dropzone');
+        wordBank.appendChild(chip);
+        draggedWords = draggedWords.filter(w => w !== word);
+      } else {
+        // Add to dropzone
+        chip.classList.add('in-dropzone');
+        dropZone.appendChild(chip);
+        draggedWords.push(word);
+      }
+
+      // Update placeholder
+      const placeholder = dropZone.querySelector('.drop-placeholder');
+      if (placeholder && draggedWords.length > 0) {
+        placeholder.remove();
+      } else if (!placeholder && draggedWords.length === 0) {
+        dropZone.innerHTML = '<span class="drop-placeholder">將詞語拖到這裡組成句子</span>';
+      }
+    }
+
+    // Setup drop zone
+    document.getElementById('dropZone').ondragover = (e) => {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    };
+    document.getElementById('dropZone').ondragleave = (e) => {
+      e.currentTarget.classList.remove('drag-over');
+    };
+    document.getElementById('dropZone').ondrop = (e) => {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const word = e.dataTransfer.getData('text/plain');
+      const chip = document.querySelector(`.word-chip[data-word="${word}"]:not(.in-dropzone)`);
+      if (chip) toggleWordInDropzone(chip);
+    };
+
+    function checkDragAnswer() {
+      if (isAnswered) return;
+
+      const level = levels[currentLevel];
+      const q = level.questions[currentQuestion];
+      const dropZone = document.getElementById('dropZone');
+      const chips = dropZone.querySelectorAll('.word-chip');
+      const userAnswer = Array.from(chips).map(c => c.dataset.word);
+
+      const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(q.answer);
+
+      if (isCorrect) {
+        isAnswered = true;
+        playCorrectSound();
+        showFeedback(true, q.explanation, q.value);
+        speakFeedback(true, q.explanation);
+        score += 10;
+        correctCount++;
+        createMiniConfetti();
+        updateScoreDisplay();
+        updateStudentProgress();
+
+        setTimeout(() => {
+          currentQuestion++;
+          loadQuestion();
+        }, 2500);
+      } else {
+        retryCount--;
+        updateRetryDisplay();
+        playWrongSound();
+
+        if (retryCount > 0) {
+          // Show retry feedback
+          showRetryFeedback();
+          playEncourageSound();
+        } else {
+          // No more retries
+          isAnswered = true;
+          showFeedback(false, q.explanation, q.value);
+          speakFeedback(false, q.explanation);
+
+          // Show correct answer
+          showCorrectDragAnswer(q.answer);
+
+          updateStudentProgress();
+
+          setTimeout(() => {
+            currentQuestion++;
+            loadQuestion();
+          }, 3000);
+        }
+      }
+    }
+
+    function showCorrectDragAnswer(answer) {
+      const dropZone = document.getElementById('dropZone');
+      const wordBank = document.getElementById('wordBank');
+
+      // Move all chips back to word bank first
+      const allChips = document.querySelectorAll('.word-chip');
+      allChips.forEach(chip => {
+        chip.classList.remove('in-dropzone');
+        wordBank.appendChild(chip);
+      });
+
+      // Clear and show correct answer
+      dropZone.innerHTML = '';
+      answer.forEach(word => {
+        const correctChip = document.createElement('div');
+        correctChip.className = 'word-chip in-dropzone';
+        correctChip.textContent = word;
+        correctChip.style.opacity = '0.7';
+        dropZone.appendChild(correctChip);
+      });
+    }
+
+    function showRetryFeedback() {
+      const encourage = getRandomEncouragement();
+      const feedbackArea = document.getElementById('feedbackArea');
+      feedbackArea.className = 'feedback show retry';
+      feedbackArea.innerHTML = `
+        <i class="fas fa-lightbulb"></i> 答案不太對喔！
+        <div class="encourage-text">
+          <span class="encourage-emoji">${encourage.emoji}</span>
+          <span>${encourage.text} 還有 ${retryCount} 次機會！</span>
+        </div>
+      `;
+
+      // Clear the dropzone for retry
+      setTimeout(() => {
+        if (!isAnswered) {
+          resetDragForRetry();
+        }
+      }, 1500);
+    }
+
+    function resetDragForRetry() {
+      const dropZone = document.getElementById('dropZone');
+      const wordBank = document.getElementById('wordBank');
+
+      const chips = dropZone.querySelectorAll('.word-chip');
+      chips.forEach(chip => {
+        chip.classList.remove('in-dropzone');
+        wordBank.appendChild(chip);
+      });
+
+      dropZone.innerHTML = '<span class="drop-placeholder">將詞語拖到這裡組成句子</span>';
+      draggedWords = [];
+    }
+
+    function selectChoiceAnswer(index) {
+      if (isAnswered) return;
+
+      const level = levels[currentLevel];
+      const q = level.questions[currentQuestion];
+      const options = document.querySelectorAll('.option-btn');
+
+      const isCorrect = index === q.correct;
+
+      if (isCorrect) {
+        isAnswered = true;
+        options.forEach(opt => opt.disabled = true);
+        options[index].classList.add('correct');
+
+        playCorrectSound();
+        score += 10;
+        correctCount++;
+        createMiniConfetti();
+
+        showFeedback(true, q.explanation, q.value);
+        speakFeedback(true, q.explanation);
+
+        updateScoreDisplay();
+        updateStudentProgress();
+
+        setTimeout(() => {
+          currentQuestion++;
+          loadQuestion();
+        }, 2500);
+      } else {
+        retryCount--;
+        updateRetryDisplay();
+        playWrongSound();
+
+        // Temporarily highlight wrong answer
+        options[index].classList.add('wrong');
+        setTimeout(() => {
+          options[index].classList.remove('wrong');
+        }, 500);
+
+        if (retryCount > 0) {
+          showRetryFeedback();
+          playEncourageSound();
+        } else {
+          // No more retries
+          isAnswered = true;
+          options.forEach(opt => opt.disabled = true);
+          options[index].classList.add('wrong');
+          options[q.correct].classList.add('correct');
+
+          showFeedback(false, q.explanation, q.value);
+          speakFeedback(false, q.explanation);
+
+          updateStudentProgress();
+
+          setTimeout(() => {
+            currentQuestion++;
+            loadQuestion();
+          }, 3000);
+        }
+      }
+    }
+
+    function showFeedback(isCorrect, explanation, value) {
+      const feedbackArea = document.getElementById('feedbackArea');
+      feedbackArea.className = `feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+
+      if (isCorrect) {
+        feedbackArea.innerHTML = `
+          <i class="fas fa-check-circle"></i> ${explanation}
+          ${value ? `<div class="value-tag">✨ 價值觀：${value}</div>` : ''}
+        `;
+      } else {
+        feedbackArea.innerHTML = `<i class="fas fa-times-circle"></i> 很可惜！正確答案已顯示。下次繼續加油！`;
+      }
+    }
+
+    function updateStudentProgress() {
+      const idx = studentsData.findIndex(s => s.name === playerName);
+      if (idx !== -1) {
+        studentsData[idx].score = score;
+        studentsData[idx].correct = correctCount;
+        studentsData[idx].currentLevel = currentLevel;
+        studentsData[idx].currentQuestion = currentQuestion;
+        studentsData[idx].levelsCompleted = currentLevel;
+      }
+    }
+
+    function showResults() {
+      // Update student status
+      const idx = studentsData.findIndex(s => s.name === playerName);
+      if (idx !== -1) {
+        studentsData[idx].status = 'completed';
+        studentsData[idx].score = score;
+        studentsData[idx].correct = correctCount;
+        studentsData[idx].levelsCompleted = levels.length;
+      }
+
+      const accuracy = Math.round((correctCount / totalQuestions) * 100);
+      let icon, title, stars, showBadge;
+
+      if (accuracy >= 90) {
+        icon = '🏆';
+        title = '太厲害了！你是守護者大師！';
+        stars = '⭐⭐⭐';
+        showBadge = true;
+      } else if (accuracy >= 70) {
+        icon = '🎉';
+        title = '做得很好！成為正式守護者！';
+        stars = '⭐⭐';
+        showBadge = true;
+      } else if (accuracy >= 50) {
+        icon = '💪';
+        title = '繼續加油！快成為守護者了！';
+        stars = '⭐';
+        showBadge = false;
+      } else {
+        icon = '📚';
+        title = '多練習就會進步！';
+        stars = '';
+        showBadge = false;
+      }
+
+      document.getElementById('resultIcon').textContent = icon;
+      document.getElementById('resultTitle').textContent = title;
+      document.getElementById('finalScore').textContent = score;
+      document.getElementById('starsDisplay').textContent = stars;
+      document.getElementById('badgeEarned').style.display = showBadge ? 'inline-flex' : 'none';
+      document.getElementById('resultMessage').textContent =
+        `你答對了 ${correctCount}/${totalQuestions} 題！正確率 ${accuracy}%`;
+
+      showScreen('result');
+
+      if (accuracy >= 70) {
+        createConfetti();
+        playVoice("恭喜你成為把字句守護者！");
+      }
+    }
+
+    function restartGame() {
+      document.getElementById('studentName').value = playerName;
+      startGame();
+    }
+
+    function goHome() {
+      closeModal();
+      showScreen('role');
+      document.getElementById('studentName').value = '';
+    }
+
+    function confirmExit() {
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    // ========== TEACHER DASHBOARD ==========
+    function updateTeacherDashboard() {
+      const total = studentsData.length;
+      const completed = studentsData.filter(s => s.status === 'completed');
+
+      let avgScore = 0, avgAccuracy = 0;
+      if (completed.length > 0) {
+        avgScore = Math.round(completed.reduce((sum, s) => sum + s.score, 0) / completed.length);
+        avgAccuracy = Math.round(completed.reduce((sum, s) => sum + (s.correct / s.total * 100), 0) / completed.length);
+      }
+
+      document.getElementById('totalStudents').textContent = total;
+      document.getElementById('avgScore').textContent = avgScore;
+      document.getElementById('avgAccuracy').textContent = avgAccuracy + '%';
+      document.getElementById('completedCount').textContent = completed.length;
+
+      const listBody = document.getElementById('studentListBody');
+
+      if (studentsData.length === 0) {
+        listBody.innerHTML = `
+          <div class="no-students">
+            <i class="fas fa-user-clock"></i>
+            <p>目前還沒有學生開始遊戲</p>
+            <p style="font-size: 0.85rem;">學生開始遊戲後會顯示在這裡</p>
+          </div>
+        `;
+      } else {
+        listBody.innerHTML = studentsData.map(student => {
+          const bgColors = ['#6366F1', '#22D3EE', '#A855F7', '#EC4899', '#F97316'];
+          const bgColor = bgColors[Math.abs(student.name.charCodeAt(0)) % bgColors.length];
+
+          const levelPips = levels.map((_, i) => {
+            let cls = 'level-pip';
+            if (i < student.levelsCompleted) cls += ' done';
+            else if (i === student.currentLevel && student.status === 'playing') cls += ' current';
+            return `<div class="${cls}"></div>`;
+          }).join('');
+
+          return `
+            <div class="student-row">
+              <div class="student-name">
+                <div class="student-avatar" style="background: ${bgColor}">${student.avatar}</div>
+                <span>${student.name}</span>
+              </div>
+              <div>
+                <span class="status-badge ${student.status}">
+                  ${student.status === 'playing' ? '🎮 進行中' : '✅ 已完成'}
+                </span>
+              </div>
+              <div style="font-weight: 700; font-size: 1.1rem;">${student.score} 分</div>
+              <div class="level-progress">${levelPips}</div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Auto-refresh teacher dashboard
+    setInterval(() => {
+      if (screens.teacher.classList.contains('active')) {
+        updateTeacherDashboard();
+      }
+    }, 2000);
+
+    // ========== CONFETTI ==========
+    function createConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#6366F1', '#22D3EE', '#FBBF24', '#A855F7', '#EC4899', '#22C55E'];
+
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+          container.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 40);
+      }
+    }
+
+    function createMiniConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#22C55E', '#22D3EE', '#FBBF24'];
+
+      for (let i = 0; i < 20; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = (35 + Math.random() * 30) + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        container.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.getElementById('studentName').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') startGame();
+    });
+
+    document.getElementById('teacherPassword').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+
+
+
+</body></html>
